@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Index</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+  
+
+
+  <link href="assets/css/style.css" rel="stylesheet">
+  <style>
+        body {
+            font-size: 0.85rem; /* Smaller font size */
+        }
+        table {
+            border-collapse: collapse;
+            margin-top: 20px; /* Space above the table */
+        }
+         td {
+            border: none; /* Remove borders */
+            padding: 8px; /* Reduced padding for tighter spacing */
+        }
+        th {
+            background-color: #353d46; /* Light background for headers */
+        }
+        .filter-section {
+            margin-bottom: 20px; /* Space below the filter section */
+        }
+    a {
+  text-decoration: none;
+  display: inline-block;
+  padding: 8px 16px;
+}
+
+a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.previous {
+  background-color: #f1f1f1;
+  color: black;
+}
+
+.next {
+  background-color: #f1f1f1;
+  color: black;
+}
+.disabled {
+    pointer-events: none; /* Prevents click events */
+    opacity: 0.5; /* Makes the button look disabled */
+    cursor: not-allowed; /* Changes the cursor to indicate it's disabled */
+}
+label, .label{
+  color: #4154f1;
+  font-weight: 700;
+}
+.card-custom {
+        background-color: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        text-align: center;
+      }
+      .icon-bg {
+        background-color: #2d1f6d;
+        color: white;
+        border-radius: 50%;
+        padding: 15px;
+        font-size: 20px;
+        margin-bottom: 20px;
+      }
+      .card-title {
+        font-size: 1.2rem;
+        color: #6c757d;
+      }
+      .value {
+        font-size: 2.5rem;
+        font-weight: bold;
+      }
+  </style>
+
+
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="index.html" class="logo d-flex align-items-center">
+        <img src="assets/img/logo.jpeg" alt="">
+        <span class="d-none d-lg-block">StarPOS</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+    <div class="search-bar">
+      <form class="search-form d-flex align-items-center">
+        <input type="text" id="productName" placeholder="Search by Product Name, Id" title="Enter search keyword">
+      </form>
+    </div><!-- End Search Bar -->
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+
+        <li class="nav-item d-block d-lg-none">
+          <a class="nav-link nav-icon search-bar-toggle " href="#">
+            <i class="bi bi-search"></i>
+          </a>
+        </li><!-- End Search Icon-->
+
+        <li class="nav-item dropdown">
+
+        <li class="nav-item dropdown pe-3">
+
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            <img src="assets/profile_pic.jpg" alt="Profile" class="rounded-circle">
+            <span class="d-none d-md-block dropdown-toggle ps-2" id="agent-name"></span>
+          </a><!-- End Profile Iamge Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li class="dropdown-header">
+              <h6 id="name2"></h6>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="sale-profile.html">
+                <i class="bi bi-person"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="#!" id="logoutBtn1">
+                <i class="bi bi-box-arrow-left"></i>
+                <span>Sign Out</span>
+              </a>
+            </li>
+
+          </ul><!-- End Profile Dropdown Items -->
+        </li><!-- End Profile Nav -->
+
+      </ul>
+    </nav><!-- End Icons Navigation -->
+
+  </header><!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link " href="index.html">
+          <i class="bi bi-grid"></i>
+          <span>Home</span>
+        </a>
+      </li>
+     
+
+      <li class="nav-heading">Pages</li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="dashboard.html" >
+            <i class="bi bi-house"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="product.html" >
+            <i class="bi bi-tags"></i>
+          <span>Products</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="sales-summary.html" >
+            <i class="bi bi-graph-up"></i>
+          <span>Sales Summary</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="users.html" >
+            <i class="bi bi-people"></i>
+          <span>Users</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#!" id="logoutBtn">
+            <i class="bi bi-box-arrow-left"></i>
+          <span>Sign Out</span>
+        </a>
+      </li><!-- End Blank Page Nav -->
+
+    </ul>
+
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Sales Summary</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item active">Sales Summary</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard profile">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-graph-up"></i> Summary Sales <span>| List</span></h5>
+                <form id="filterForm">
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <label for="dateRange">Date Range:</label>
+                        <input type="date" class="form-control" id="startDate" placeholder="Start Date">
+                        <input type="date" class="form-control mt-2" id="endDate" placeholder="End Date">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="priceRange">Price Range:</label>
+                        <input type="number" class="form-control" id="minPrice" placeholder="Min Price">
+                        <input type="number" class="form-control mt-2" id="maxPrice" placeholder="Max Price">
+                    </div>
+                    <div class="col-md-3">
+                      <label for="Availabilty">SalesAgent:</label>
+                      <select name="" id="saleAgent" class="form-control">
+                        <option value="">Select SaleAgent</option>
+                      </select>
+                      <input type="text" class="form-control mt-2" id="CustomerName" placeholder="filter by Customer Name">
+                      </div>
+                      <div class="col-md-3">
+                        <button class="btn btn-primary mt-2 btn-sm" type="submit"><i class="bi bi-filter"></i> Filter</button>
+                      </div>
+                    
+                </div>
+              </form>
+        
+                <!-- New Row for Add Product Buttons -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <button class="btn btn-success btn-sm" data-type="daily" id="viewVisual" data-bs-toggle="modal" data-bs-target="#visualReport"><i class="bi bi-bar-chart"></i> Generate Daily Report</button>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-secondary btn-sm" data-type="weekly" id="viewVisual" data-bs-toggle="modal" data-bs-target="#visualReport"><i class="bi bi-bar-chart"></i> Generate Weekly Report</button>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-warning btn-sm" data-type="monthly" id="viewVisual" data-bs-toggle="modal" data-bs-target="#visualReport"><i class="bi bi-bar-chart"></i> Generate Monthly Report</button>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="card card-custom">
+                      <!-- Bootstrap Icon -->
+                      <div class="icon-bg mx-auto">
+                        <i class="bi bi-people-fill"></i>
+                      </div>
+                      <h5 class="card-title">Total Products Sold Price</h5>
+                      <div class="value" id="totalProductSoldPrice"></div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="card card-custom">
+                      <!-- Bootstrap Icon -->
+                      <div class="icon-bg mx-auto">
+                        <i class="bi bi-people-fill"></i>
+                      </div>
+                      <h5 class="card-title">Total Sales</h5>
+                      <div class="value" id="totalSales"></div>
+                    </div>
+                  </div>
+                </div>
+   
+                <!-- Product List Table -->
+                <table class="table table-hover table-border-top">
+                    <thead>
+                        <tr>
+                          <th scope="col">Id</th>
+                          <th scope="col">Sale Agent</th>
+                          <th scope="col">Customer Name</th>
+                          <th scope="col">Total Price</th>
+                          <th scope="col">CreatedAt</th>
+                          <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-container">
+                      <center>
+                      <div class="spinner-grow bg-secondary" id="loadingSpinner" role="status" style="display: none;">
+                        <span class="visually-hidden"></span>
+                    </div>
+                  </center>
+                    </tbody>
+                </table>
+                <a href="#" class="previous" id="prevPage">&laquo; Previous</a>
+                <span id="remainng"></span>
+            <a href="#" class="next" id="nextPage">Next &raquo;</a>
+            </div>
+        </div>
+        
+     
+        
+    </section>
+
+    <div class="modal fade" id="UpdateModel" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="title">Receipt Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <h5 class="card-title">Receipt Details</h5>
+
+            <div class="row mt-2">
+              <div class="col-lg-3 col-md-4 label">Receipt ID</div>
+              <div class="col-lg-9 col-md-8" id="receiptID"></div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-lg-3 col-md-4 label">SalesAgent</div>
+              <div class="col-lg-9 col-md-8" id="receiptSaleName"></div>
+            </div>
+            
+            <div class="row mt-2">
+              <div class="col-lg-3 col-md-4 label ">Customer Name</div>
+              <div class="col-lg-9 col-md-8" id="receiptName"></div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-lg-3 col-md-4 label">Grand Price</div>
+              <div class="col-lg-9 col-md-8" id="receiptPrice"></div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-lg-3 col-md-4 label">CreatedAt</div>
+              <div class="col-lg-9 col-md-8" id="receiptDate"></div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-striped" style="font-size: 12px;">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">In Stock</th>
+                        <th scope="col">Price (₦)</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total (₦)</th>
+                    </tr>
+                </thead>
+                <tbody class="cart-table">
+                   
+                </tbody>
+            </table>
+            </div>
+
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            <button class="btn btn-primary btn-sm" id="printReceipt"><i class="bi bi-printer"></i> Print Receipt</button>
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="visualReport" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Visualization Report</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="min-height: 150px;">
+          
+          <div class="col-lg-12">
+            <div class="cad">
+              <div class="card-body">
+                <h5 class="card-title" id="data-title"></h5>
+                <center >
+                  <div class="spinner-grow bg-secondary mt-5" id="loadingSpinner1" role="status" style="display: none;">
+                    <span class="visually-hidden"></span>
+                </div>
+              </center>
+                <canvas id="barChart" style="max-height: 400px;"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+          <button class="btn btn-primary btn-sm" id="downloadPdf"><i class="bi bi-download"></i> Download</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="receipt-container" style="display: none;">
+    <!-- Receipt Header -->
+    <div class="receipt-header mb-3 mt-2">
+        <h2>StaPos</h2>
+        <p>123 Main Street</p>
+        <p>Lagos, Nigeria</p>
+        <p>Phone: +234 123 4567</p>
+    </div>
+
+    <!-- Table for products -->
+    <table class="table" id="cart-table">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Price (₦)</th>
+                <th>Qty</th>
+                <th>Total (₦)</th>
+            </tr>
+        </thead>
+        <tbody id="cart-body">
+      </tbody>
+    </table>
+
+
+    <!-- Total Section -->
+    <div class="total">
+      <p>Grand Total: <span id="grand-total">₦0.00</span></p>
+  </div>
+
+    <!-- Footer (Thank you message) -->
+    <div class="receipt-footer">
+      <p><span id="customerName2"> <br></span>Thank you for shopping with us!</p>
+  </div>
+</div>
+
+
+  </main><!-- End #main -->
+
+  <div class="alert alert-danger fade show d-none" id="error-alert">
+    <strong>Error! </strong> <span id="error-message"></span>
+  </div>
+  <div class="alert alert-success fade show d-none" id="success-alert">
+    <strong>Success! </strong> <span id="success-message"></span>
+  </div>
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="credits">
+      Designed by <a href="#!">StarLiteCode</a>
+    </div>
+  </footer><!-- End Footer -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/chart.js/chart.umd.js"></script>
+  <script src="assets/vendor/echarts/echarts.min.js"></script>
+  <script src="assets/vendor/quill/quill.min.js"></script>
+  <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets/vendor/tinymce/tinymce.min.js"></script>
+  
+
+
+  <!-- Template Main JS File -->
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/sale-summary.js"></script>
+
+  <script>
+    document.getElementById('downloadPdf').addEventListener('click', function () {
+        html2canvas(document.querySelector('#barChart')).then(canvas => {
+            // Get the jsPDF instance
+            const { jsPDF } = window.jspdf; // Access jsPDF from the global window object
+            const pdf = new jsPDF();
+            const imgData = canvas.toDataURL('image/png');
+            pdf.addImage(imgData, 'PNG', 0, 0);
+            pdf.save('sales-report.pdf');
+        }).catch(error => {
+            console.error('Error capturing canvas:', error);
+        });
+    });
+  </script>
+
+</body>
+
+</html>

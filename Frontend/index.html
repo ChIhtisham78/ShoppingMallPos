@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Index</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+  <link href="assets/css/style.css" rel="stylesheet">
+  <style>
+   .quantity-input {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .quantity-input input {
+            width: 60px; /* Adjust width as needed */
+            text-align: center;
+            -moz-appearance: textfield; /* Firefox */
+            -webkit-appearance: none; /* Safari and Chrome */
+            appearance: none; /* Modern browsers */
+        }
+        /* Hide the spinner controls */
+        .quantity-input input::-webkit-outer-spin-button,
+        .quantity-input input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .grand-total {
+            font-weight: bold;
+            color:rgb(18, 82, 124)
+        }
+        .low-stock {
+            color: red; /* Change text color to red for low stock */
+        }
+</style>
+
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="index.html" class="logo d-flex align-items-center">
+        <img src="assets/img/logo.jpeg" alt="">
+        <span class="d-none d-lg-block">StarPOS</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+    <div class="search-bar">
+      <form class="search-form d-flex align-items-center">
+        <input type="text" id="productName" placeholder="Search by Product Name, Id" title="Enter search keyword">
+      </form>
+    </div><!-- End Search Bar -->
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+
+        <li class="nav-item d-block d-lg-none">
+          <a class="nav-link nav-icon search-bar-toggle " href="#">
+            <i class="bi bi-search"></i>
+          </a>
+        </li><!-- End Search Icon-->
+
+        <li class="nav-item dropdown">
+
+        <li class="nav-item dropdown pe-3">
+
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            <img src="assets/profile_pic.jpg" alt="Profile" class="rounded-circle">
+            <span class="d-none d-md-block dropdown-toggle ps-2" id="agent-name"></span>
+          </a><!-- End Profile Iamge Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li class="dropdown-header">
+              <h6 id="name2"></h6>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="sale-profile.html">
+                <i class="bi bi-person"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="#!" id="logoutBtn1">
+                <i class="bi bi-box-arrow-left"></i>
+                <span>Sign Out</span>
+              </a>
+            </li>
+
+          </ul><!-- End Profile Dropdown Items -->
+        </li><!-- End Profile Nav -->
+
+      </ul>
+    </nav><!-- End Icons Navigation -->
+
+  </header><!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link " href="index.html">
+          <i class="bi bi-grid"></i>
+          <span>Home</span>
+        </a>
+      </li>
+     
+
+      <li class="nav-heading">Pages</li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="dashboard.html" >
+            <i class="bi bi-house"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="product.html" >
+            <i class="bi bi-tags"></i>
+          <span>Products</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="sales-summary.html" >
+            <i class="bi bi-graph-up"></i>
+          <span>Sales Summary</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="users.html" >
+            <i class="bi bi-people"></i>
+          <span>Users</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#!" id="logoutBtn">
+            <i class="bi bi-box-arrow-left"></i>
+          <span>Sign Out</span>
+        </a>
+      </li><!-- End Blank Page Nav -->
+
+    </ul>
+
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Index</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item active">Index</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+      <div class="row">
+
+        <!-- Left side columns -->
+        <div class="col-lg-6">
+          <div class="row">
+            <div class="col-xxl-12 col-md-12">
+              <div class="card info-card sales-card">
+                <div class="card-body">
+                  <h5 class="card-title">Products <span>| Search</span></h5>
+                  <div class=" mt-5">
+                    <div class="list-group list-container" style="font-size: 13px;">
+                      <center>
+                        <div class="spinner-grow bg-secondary" id="loadingSpinner" role="status" style="display: none;">
+                          <span class="visually-hidden"></span>
+                      </div>
+                    </center>
+              
+                  </div>
+                    
+                
+                    <!-- Spacer -->
+                    <div class="my-5"></div>
+                
+                    <p class="text-secondary">
+                        <span>Recent Purchase Products</span>
+                        <hr>
+                    </p>
+
+                    <div class="recent-container ">
+                      <center>
+                        <div class="spinner-grow bg-secondary" id="loadingSpinner1" role="status" style="display: none;">
+                          <span class="visually-hidden"></span>
+                      </div>
+                    </center>
+                    
+                    </div>
+                
+                    <!-- Product button -->
+                    
+                </div>
+                
+                </div>
+
+              </div>
+            </div>
+
+
+          </div>
+        </div><!-- End Left side columns -->
+
+        <!-- Right side columns -->
+        <div class="col-lg-6">
+
+          <!-- Recent Activity -->
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Cart <span>| Items</span></h5>
+
+              <div class="activity">
+                <div class="table-responsive">
+                <table class="table table-striped" style="font-size: 12px;">
+                  <thead>
+                      <tr>
+                          <th scope="col">Id</th>
+                          <th scope="col">Product</th>
+                          <th scope="col">In Stock</th>
+                          <th scope="col">Price (₦)</th>
+                          <th scope="col" class="text-center">Quantity</th>
+                          <th scope="col">Total (₦)</th>
+                          <th scope="col" class="text-center">Action</th>
+                      </tr>
+                  </thead>
+                  <tbody class="cart-table">
+                     
+                  </tbody>
+              </table>
+              </div>
+              <div class="col-12">
+                  <input type="text" class="form-control" id="customerName" 
+                  placeholder="Enter Customer Name">
+                </div>
+  
+              <div class="d-flex justify-content-between mt-3">
+                  <h4>Grand Total: </h4>
+                  <h4 class="grand-total" id="grandTotal">₦0.00</h4>
+              </div>
+              <div>
+                  <button class="btn btn-primary" id="purchasePrint"><span class="" id="submit-text">Purchase and <i class="bi bi-printer-fill"></i>
+                  </span> <div id="spinner" class="spinner-border text-white d-none"></div></button>
+                <button class="btn btn-primary" id="purchase"><span class="" id="submit-text2">Purchase Only <i class="bi bi-arrow-right"></i>
+                </span> <div id="spinner2" class="spinner-border text-white d-none"></div></button>
+              </div>
+              <div class="mt-5">
+                <a href="sales-summary.html" class="btn btn-warning"><i class="bi bi-graph-up"></i> Sale Summary</a>
+              </div>
+              
+
+              </div>
+
+            </div>
+          </div><!-- End Recent Activity -->
+        </div><!-- End Right side columns -->
+
+      </div>
+      <div class="receipt-container" style="display: none;">
+        <!-- Receipt Header -->
+        <div class="receipt-header mb-3 mt-2">
+            <h2>StaPos</h2>
+            <p>123 Main Street</p>
+            <p>Lagos, Nigeria</p>
+            <p>Phone: +234 123 4567</p>
+        </div>
+
+        <!-- Table for products -->
+        <table class="table" id="cart-table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Price (₦)</th>
+                    <th>Qty</th>
+                    <th>Total (₦)</th>
+                </tr>
+            </thead>
+            <tbody id="cart-body">
+          </tbody>
+        </table>
+
+
+        <!-- Total Section -->
+        <div class="total">
+          <p>Grand Total: <span id="grand-total">₦0.00</span></p>
+      </div>
+
+        <!-- Footer (Thank you message) -->
+        <div class="receipt-footer">
+          <p><span id="customerName2"> <br></span>Thank you for shopping with us!</p>
+      </div>
+    </div>
+
+    </section>
+
+  </main><!-- End #main -->
+
+  <div class="alert alert-danger fade show d-none" id="error-alert">
+    <strong>Error! </strong> <span id="error-message"></span>
+  </div>
+  <div class="alert alert-success fade show d-none" id="success-alert">
+    <strong>Success! </strong> <span id="success-message"></span>
+  </div>
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="credits">
+      Designed by <a href="#!">StarLiteCode</a>
+    </div>
+  </footer><!-- End Footer -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/chart.js/chart.umd.js"></script>
+  <script src="assets/vendor/echarts/echarts.min.js"></script>
+  <script src="assets/vendor/quill/quill.min.js"></script>
+  <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets/vendor/tinymce/tinymce.min.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/index.js"></script>
+
+</body>
+
+</html>

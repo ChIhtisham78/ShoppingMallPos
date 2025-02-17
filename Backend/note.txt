@@ -1,0 +1,53 @@
+C# most install packages
+
+
+
+
+dotnet tool install --global dotnet-ef
+dotnet add package Microsoft.EntityFrameworkCore.Design --version 8.0.0
+dotnet add package Microsoft.EntityFrameworkCore.Tools --version 8.0.0 
+dotnet add package Microsoft.EntityFrameworkCore
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 8.0.0
+dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore --version 8.0.0
+dotnet add package Microsoft.Extensions.Identity.Core --version 8.0.0
+dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 8.0.0
+dotnet add package AutoMapper.Extensions.Microsoft.DependencyInjection
+dotnet add package Newtonsoft.Json
+dotnet add package Microsoft.AspNetCore.Mvc.NewtonsoftJson
+
+
+
+
+dotnet add package Microsoft.Extensions.Http
+dotnet add package DinkToPdf.Contracts
+dotnet add package DinkToPdf
+
+
+dotnet add package ExcelDataReader
+dotnet add package CsvHelper
+
+
+dotnet new webapi -o <project_name>
+
+dotnet ef database update
+dotnet ef migrations add init
+
+
+2024-01-01T00:00:00
+
+[Authorize(Policy = "IsStudent")]
+[Authorize(Policy = "IsAdmin")]
+[Authorize(Policy = "IsOwnerOrReadOnly")]
+
+
+
+[Range(0.01, double.MaxValue, ErrorMessage = "Amount must be a positive number with two decimal places.")]
+[DataType(DataType.Currency)]
+
+
+.
+
+
+
+update is not working fine.
+update the stock ++ if updating
