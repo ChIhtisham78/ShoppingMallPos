@@ -404,82 +404,104 @@ namespace Backend.Controllers
 
         [HttpPost("make/sales/{customerName}/{GrandPrice}")]
         [Authorize]
-        public async Task<IActionResult> MakeSales([FromBody] List<CreateSaleDto> saleItems, [FromRoute] string customerName, [FromRoute] decimal GrandPrice){
+        public async Task<IActionResult> MakeSales(
+            [FromBody] List<CreateSaleDto> saleItems,
+            [FromRoute] string customerName,
+            [FromRoute] decimal GrandPrice)
+        {
             if (saleItems == null || !saleItems.Any())
             {
-                return StatusCode(400, new{message="No products in the cart"});
+                return BadRequest(new { message = "No products in the cart." });
             }
+
+            var productIds = saleItems.Select(s => s.ProductId).Distinct().ToList();
+            var products = await _context.Products
+                .Where(p => productIds.Contains(p.Id))
+                .ToDictionaryAsync(p => p.Id);
+
+            // Validate products
             foreach (var item in saleItems)
             {
-                var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == item.ProductId);
-                if (product == null)
+                if (!products.ContainsKey(item.ProductId))
                 {
-                    return BadRequest(new {message=$"Product with ID {item.ProductId} not found."});
+                    return BadRequest(new { message = $"Product with ID {item.ProductId} not found." });
                 }
-                if (product.Stock <= 0)
+
+                var product = products[item.ProductId];
+                if (product.Stock < item.Quantity)
                 {
-                    return BadRequest(new {message=$"Product with ID {item.ProductId} has no available product in stock"});
+                    return BadRequest(new { message = $"Insufficient stock for Product ID {item.ProductId}." });
                 }
             }
+
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var sale = new Sale
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                AppUserId = userId,
-                CustomerName = customerName,
-                GrandPrice = GrandPrice,
-                CreatedAt = DateTime.Now
-            };
-            await _context.Sales.AddAsync(sale);
-            await _context.SaveChangesAsync();
-            foreach (var item in saleItems)
-            {
-                var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == item.ProductId);
-                var saleProduct = new SaleProduct
+                var sale = new Sale
                 {
-                    SaleId = sale.Id,
-                    ProductId = item.ProductId,
-                    Quantity = item.Quantity,
-                    TotalPrice = item.TotalPrice
+                    AppUserId = userId,
+                    CustomerName = customerName,
+                    GrandPrice = GrandPrice,
+                    CreatedAt = DateTime.UtcNow
                 };
 
-                await _context.SaleProducts.AddAsync(saleProduct);
+                await _context.Sales.AddAsync(sale);
+                await _context.SaveChangesAsync(); // To get sale.Id
 
-                var recentsale = await _context.RecentSales.FirstOrDefaultAsync(x => x.ProductID == product.Id);
+                var saleProducts = new List<SaleProduct>();
 
-                if (recentsale == null)
+                foreach (var item in saleItems)
                 {
-                    var recentSales = new RecentSale
+                    var product = products[item.ProductId];
+
+                    saleProducts.Add(new SaleProduct
                     {
-                        ProductID = product.Id
-                    };
-                    await _context.RecentSales.AddAsync(recentSales);
+                        SaleId = sale.Id,
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity,
+                        TotalPrice = item.TotalPrice
+                    });
 
-                    await _context.SaveChangesAsync();
+                    // Update product stock
+                    product.Stock -= item.Quantity;
 
-                    var recentSalesCount = await _context.RecentSales.CountAsync();
-                    if (recentSalesCount > 10)
+                    // Manage RecentSales
+                    var recentSale = await _context.RecentSales
+                        .FirstOrDefaultAsync(rs => rs.ProductID == product.Id);
+
+                    if (recentSale == null)
                     {
-                        // Find the oldest record(s) and remove it
-                        var oldestRecentSale = await _context.RecentSales
-                            .OrderBy(x => x.Id)
-                            .FirstOrDefaultAsync();
-
-                        if (oldestRecentSale != null)
-                        {
-                            _context.RecentSales.Remove(oldestRecentSale);
-                            await _context.SaveChangesAsync();
-
-                        }
+                        await _context.RecentSales.AddAsync(new RecentSale { ProductID = product.Id });
                     }
                 }
-                                
 
-                product.Stock -= item.Quantity;
+                await _context.SaleProducts.AddRangeAsync(saleProducts);
+                await _context.SaveChangesAsync();
+
+                // Maintain only last 10 RecentSales
+                var recentSalesCount = await _context.RecentSales.CountAsync();
+                if (recentSalesCount > 10)
+                {
+                    var excessCount = recentSalesCount - 10;
+                    var oldestRecentSales = await _context.RecentSales
+                        .OrderBy(rs => rs.Id)
+                        .Take(excessCount)
+                        .ToListAsync();
+
+                    _context.RecentSales.RemoveRange(oldestRecentSales);
+                    await _context.SaveChangesAsync();
+                }
+
+                await transaction.CommitAsync();
+
+                return Ok(new { message = "Sale and SaleProducts created successfully!" });
             }
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Sale and SaleProducts created successfully!" });
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return StatusCode(500, new { message = $"Internal server error: {ex.Message}" });
+            }
         }
 
         [HttpGet("sales/summary")]
