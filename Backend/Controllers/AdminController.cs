@@ -196,32 +196,43 @@ namespace Backend.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return StatusCode(400, new { message = ModelState });
+                return BadRequest(new { message = "Invalid input data.", errors = ModelState });
             }
+
             if (productsDto.Price <= 0)
             {
-                return StatusCode(400, new { message = "Price must be greater than zero" });
+                return BadRequest(new { message = "Price must be greater than zero." });
             }
+
             if (productsDto.Stock <= 0)
             {
-                return StatusCode(400, new { message = "Stock must be greater than zero" });
+                return BadRequest(new { message = "Stock must be greater than zero." });
             }
+
             var existingProduct = await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
             if (existingProduct == null)
             {
-                return StatusCode(400, new { message = "product with this Id not found." });
+                return NotFound(new { message = $"Product with ID {id} not found." });
             }
-            if (existingProduct.Name == productsDto.Name)
+
+            // Optional: check if another product has the same name to prevent name conflict
+            var duplicateNameProduct = await _context.Products
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Name == productsDto.Name && x.Id != id);
+            if (duplicateNameProduct != null)
             {
-                return StatusCode(400, new { message = "Name already exists" });
+                return Conflict(new { message = "Another product with the same name already exists." });
             }
+
             var updatedProduct = await _adminRepo.UpdateProductAsync(existingProduct, productsDto);
             if (updatedProduct == null)
             {
-                return StatusCode(400, new { message = "Cannot update product" });
+                return StatusCode(500, new { message = "An error occurred while updating the product." });
             }
-            return Ok(updatedProduct);
+
+            return Ok(new { message = "Product updated successfully.", product = updatedProduct });
         }
+
 
 
         [HttpGet("index/product/items")]
