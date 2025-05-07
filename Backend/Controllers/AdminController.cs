@@ -144,30 +144,39 @@ namespace Backend.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return StatusCode(400, new { message = ModelState });
+                return BadRequest(new { message = "Invalid input data.", errors = ModelState });
             }
+
             if (productDto.Price <= 0)
             {
-                return StatusCode(400, new{message="Price must be greater than zero"});
+                return BadRequest(new { message = "Price must be greater than zero." });
             }
+
             if (productDto.Stock <= 0)
             {
-                return StatusCode(400, new{message="Stock must be greater than zero"});
+                return BadRequest(new { message = "Stock must be greater than zero." });
             }
-            var existingProduct = await _context.Products.FirstOrDefaultAsync(x=>x.Name == productDto.Name);
+
+            var existingProduct = await _context.Products
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Name == productDto.Name);
+
             if (existingProduct != null)
             {
-                return StatusCode(400, new { message = "produt already exists please try to update it on the list." });
+                return Conflict(new { message = "Product already exists. Please update it in the product list." });
             }
+
             var product = new Product
             {
-                Name = productDto.Name,
+                Name = productDto.Name!.Trim(),
                 Stock = productDto.Stock,
                 Price = productDto.Price
             };
+
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
-            return StatusCode(200, new {message="Added successfully"});
+
+            return Ok(new { message = "Product added successfully." });
         }
 
 
