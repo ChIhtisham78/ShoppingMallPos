@@ -255,151 +255,150 @@ namespace Backend.Controllers
         public async Task<IActionResult> UploadProduct(IFormFile file)
         {
             if (file == null || file.Length == 0)
-                return StatusCode(400, new{message="No file uploaded."});
-            List<UpdateProductsDto> products = new List<UpdateProductsDto>();
+                return BadRequest(new { message = "No file uploaded." });
+
             var extension = Path.GetExtension(file.FileName).ToLower();
+            var products = new List<UpdateProductsDto>();
             int successfulImports = 0;
             int duplicateCount = 0;
             int updateCount = 0;
-             try
+
+            try
             {
                 if (extension == ".csv")
+                {
+                    using var reader = new StreamReader(file.OpenReadStream());
+                    using var csv = new CsvReader(reader, new CsvHelper.Configuration.CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture));
+
+                    csv.Read();
+                    csv.ReadHeader();
+
+                    string[] expectedHeaders = { "Name", "Price", "Stock" };
+                    foreach (var header in expectedHeaders)
                     {
-                        using (var reader = new StreamReader(file.OpenReadStream()))
-                        using (var csv = new CsvReader(reader, new CsvHelper.Configuration.CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture)))
+                        if (!csv.HeaderRecord.Contains(header))
                         {
-                            csv.Read(); // Read the first row (header)
-                            csv.ReadHeader(); // Read header row
-
-                            // Expected headers
-                            string[] expectedHeaders = new string[] { "Name", "Price", "Stock" };
-                            
-                            // Check if the actual headers match the expected headers
-                            foreach (var header in expectedHeaders)
-                            {
-                                if (!csv.HeaderRecord.Contains(header))
-                                {
-                                    return BadRequest(new { message = $"Invalid header found. Expected '{header}' but not found in CSV." });
-                                }
-                            }
-
-                            // Continue reading records
-                            int nullDataCount = 0;
-                            while (csv.Read())
-                            {
-                                var name = csv.GetField("Name")?.Trim();
-                                var priceString = csv.GetField("Price")?.Trim();
-                                decimal priceDecimal = 0;
-                                var stockString = csv.GetField("Stock")?.Trim();
-                                int stock = 0;
-
-                                // Check for nulls in the data rows
-                                if (string.IsNullOrWhiteSpace(name) || !decimal.TryParse(priceString, out priceDecimal) || string.IsNullOrWhiteSpace(stockString) || !int.TryParse(stockString, out stock))
-                                {
-                                    nullDataCount++;
-                                    continue; // Skip if any field is null
-                                }
-
-                                var product = new UpdateProductsDto
-                                {
-                                    Name = name,
-                                    Price = priceDecimal,
-                                    Stock = stock
-                                };
-
-                                products.Add(product);
-                            }
+                            return BadRequest(new { message = $"Invalid header: '{header}' is missing in CSV." });
                         }
                     }
 
-                    else if (extension == ".xlsx")
+                    while (csv.Read())
                     {
-                        using (var stream = file.OpenReadStream())
+                        var name = csv.GetField("Name")?.Trim();
+                        var priceString = csv.GetField("Price")?.Trim();
+                        var stockString = csv.GetField("Stock")?.Trim();
+
+                        if (string.IsNullOrWhiteSpace(name) ||
+                            !decimal.TryParse(priceString, out var priceDecimal) ||
+                            !int.TryParse(stockString, out var stock))
                         {
-                            using (var reader = ExcelReaderFactory.CreateReader(stream))
+                            continue; // skip invalid row
+                        }
+
+                        products.Add(new UpdateProductsDto { Name = name, Price = priceDecimal, Stock = stock });
+                    }
+                }
+                else if (extension == ".xlsx")
+                {
+                    using var stream = file.OpenReadStream();
+                    using var reader = ExcelReaderFactory.CreateReader(stream);
+
+                    bool isFirstRow = true;
+                    string[] expectedHeaders = { "Name", "Price", "Stock" };
+                    string[] actualHeaders = new string[expectedHeaders.Length];
+
+                    while (reader.Read())
+                    {
+                        if (isFirstRow)
+                        {
+                            for (int i = 0; i < expectedHeaders.Length; i++)
                             {
-                                bool isFirstRow = true;
-                                int nullDataCount = 0; // Track the first row (headers)
-                                string[] expectedHeaders = new string[] { "Name", "Price", "Stock" };
-                                string[] actualHeaders = new string[expectedHeaders.Length];
-                                while (reader.Read())
+                                actualHeaders[i] = reader.GetValue(i)?.ToString().Trim();
+                            }
+
+                            for (int i = 0; i < expectedHeaders.Length; i++)
+                            {
+                                if (!string.Equals(actualHeaders[i], expectedHeaders[i], StringComparison.OrdinalIgnoreCase))
                                 {
-                                    if (isFirstRow)
-                                {
-                                    for (int i = 0; i < expectedHeaders.Length; i++)
-                                    {
-                                        actualHeaders[i] = reader.GetValue(i)?.ToString().Trim();
-                                    }
-
-                                    // Check if headers match the expected headers
-                                    for (int i = 0; i < expectedHeaders.Length; i++)
-                                    {
-                                        if (!string.Equals(actualHeaders[i], expectedHeaders[i], StringComparison.OrdinalIgnoreCase))
-                                        {
-                                            return BadRequest(new { message = $"Invalid header '{actualHeaders[i]}' found. Expected '{expectedHeaders[i]}'." });
-                                        }
-                                    }
-
-                                    isFirstRow = false;
-                                    continue; // Skip the header row
-                                }
-                                var name = reader.GetValue(0)?.ToString().Trim();
-                                var priceString = reader.GetValue(1)?.ToString().Trim();
-                                var stockString = reader.GetValue(2)?.ToString().Trim();
-                                decimal priceDecimal = 0;
-                                int stock = 0;
-                                if (string.IsNullOrWhiteSpace(name) || !decimal.TryParse(priceString, out priceDecimal) || string.IsNullOrWhiteSpace(stockString) || !int.TryParse(stockString, out stock))
-                                {
-                                    nullDataCount++;
-                                    continue; // Skip this record if any field is null
-                                }
-
-                                var product = new UpdateProductsDto
-                                    {
-                                        Name = name,
-                                        Price = priceDecimal,
-                                        Stock = stock
-                                    };
-
-                                    products.Add(product);
+                                    return BadRequest(new { message = $"Invalid header '{actualHeaders[i]}'. Expected '{expectedHeaders[i]}'." });
                                 }
                             }
+
+                            isFirstRow = false;
+                            continue;
                         }
+
+                        var name = reader.GetValue(0)?.ToString().Trim();
+                        var priceString = reader.GetValue(1)?.ToString().Trim();
+                        var stockString = reader.GetValue(2)?.ToString().Trim();
+
+                        if (string.IsNullOrWhiteSpace(name) ||
+                            !decimal.TryParse(priceString, out var priceDecimal) ||
+                            !int.TryParse(stockString, out var stock))
+                        {
+                            continue;
+                        }
+
+                        products.Add(new UpdateProductsDto { Name = name, Price = priceDecimal, Stock = stock });
                     }
-                    else
+                }
+                else
+                {
+                    return BadRequest(new { message = "Unsupported file format. Please upload a CSV or Excel (.xlsx) file." });
+                }
+
+                var productsToAdd = new List<Product>();
+
+                foreach (var productDto in products)
+                {
+                    var existingProduct = await _context.Products.FirstOrDefaultAsync(x => x.Name == productDto.Name);
+                    if (existingProduct != null)
                     {
-                        return StatusCode(400, new{message="Unsupported file format. Please upload a CSV or Excel file."});
-                    }
-                    foreach (var productDto in products){
-                    var existingProduct = await _context.Products.FirstOrDefaultAsync(x=>x.Name == productDto.Name);
-                    if (existingProduct != null){
                         if (existingProduct.Price == productDto.Price && existingProduct.Stock == productDto.Stock)
                         {
                             duplicateCount++;
-                            continue; 
+                            continue;
                         }
-                        var updatedProduct = await _adminRepo.UpdateProductAsync(existingProduct, productDto);
-                        updateCount ++;
-                         continue;
-                    }
-                    var product = new Product{
-                        Name = productDto.Name,
-                        Price = productDto.Price,
-                        Stock = productDto.Stock
-                    };
-                    await _context.Products.AddAsync(product);
-                    await _context.SaveChangesAsync();
-                    successfulImports++;
-                    }
-                    return StatusCode(200, new 
-                    {
-                        message = $"{successfulImports} out of {products.Count} Products imported successfully.| Duplicate: {duplicateCount} | Updated: {updateCount}",
-                        Duplicates = duplicateCount,
-                    });
-                    }catch (Exception ex){
-                        return StatusCode(500, $"Internal server error: {ex.Message}");
-                    }
 
+                        await _adminRepo.UpdateProductAsync(existingProduct, productDto);
+                        updateCount++;
+                    }
+                    else
+                    {
+                        productsToAdd.Add(new Product
+                        {
+                            Name = productDto.Name,
+                            Price = productDto.Price,
+                            Stock = productDto.Stock
+                        });
+                        successfulImports++;
+                    }
+                }
+
+                if (productsToAdd.Any())
+                {
+                    await _context.Products.AddRangeAsync(productsToAdd);
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    message = $"{successfulImports} out of {products.Count} products imported successfully. Duplicates: {duplicateCount}, Updated: {updateCount}",
+                    summary = new
+                    {
+                        total = products.Count,
+                        imported = successfulImports,
+                        updated = updateCount,
+                        duplicates = duplicateCount
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception here if you have logging (recommended)
+                return StatusCode(500, new { message = "Internal server error.", error = ex.Message });
+            }
         }
 
 
