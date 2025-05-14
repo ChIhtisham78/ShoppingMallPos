@@ -81,7 +81,7 @@ namespace Backend.Repository
 
             if (!string.IsNullOrWhiteSpace(query.Name))
             {
-                itemsProduct = itemsProduct.Where(x=>x.Name.Contains(query.Name)
+                itemsProduct = itemsProduct.Where(x=>x.Name!.Contains(query.Name)
                 || x.Id.ToString().Contains(query.Name));
 
                 var productDtos = itemsProduct
@@ -117,8 +117,6 @@ namespace Backend.Repository
             .FirstOrDefaultAsync(x=>x.Id==id);
 
             return salesDetails?.ToSalesProductDetailsDto();
-
-
         }
 
         public async Task<List<ListSalesDto>> GetSalesProductItemsAsync(SalesProductQuery query)
@@ -132,7 +130,7 @@ namespace Backend.Repository
             if(!string.IsNullOrWhiteSpace(query.ProductName))
             {
                 sales = sales.Where(x => x.SaleProducts
-                    .Any(sp => sp.Product.Name.Contains(query.ProductName))
+                    .Any(sp => sp.Product!.Name!.Contains(query.ProductName))
                 || x.Id.ToString().Contains(query.ProductName));
             };
             if(!string.IsNullOrWhiteSpace(query.SalesAgent))
@@ -163,7 +161,7 @@ namespace Backend.Repository
 
             if(!string.IsNullOrWhiteSpace(query.CustomerName))
             {
-                sales = sales.Where(x => x.CustomerName.Contains(query.CustomerName));
+                sales = sales.Where(x => x.CustomerName!.Contains(query.CustomerName));
             };
 
             
@@ -175,7 +173,7 @@ namespace Backend.Repository
 
         }
 
-        public async Task<List<ListSalesDto>?> GetUserProfileAsync(UserSalesQuery query, string id)
+        public async Task<List<ListSalesDto>?> GetUserProfileAsync(string id,UserSalesQuery query)
         {
             var sales = _context.Sales
             .OrderByDescending(x=>x.CreatedAt)

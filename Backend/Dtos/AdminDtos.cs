@@ -100,10 +100,4 @@ namespace Backend.Dtos
         public List<SalesProductListDto>? Products {get; set;} = new List<SalesProductListDto>();
        
     }
-
-
-
-
-
-
 }
