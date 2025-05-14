@@ -622,9 +622,9 @@ namespace Backend.Controllers
         {
             var sales = await _context.SaleProducts
                 .Include(sp => sp.Sale)
-                .ThenInclude(s => s.AppUser)   // Include the AppUser (agent) details
-                .Include(sp => sp.Product)     // Include the Product details
-                .GroupBy(sp => new { sp.Sale.Id, sp.Sale.AppUserId })  // Group by SaleId and AppUserId
+                .ThenInclude(s => s.AppUser)   
+                .Include(sp => sp.Product)    
+                .GroupBy(sp => new { sp.Sale.Id, sp.Sale.AppUserId })
                 .Select(group => new
                 {
                     saleId = group.Key.Id,
@@ -668,9 +668,6 @@ namespace Backend.Controllers
             return Ok(new {users = users});
         }
 
-       
-   
-
         [HttpGet("get/users/list")]
         [Authorize]
         public async Task<IActionResult> GetUserList(){
@@ -679,13 +676,6 @@ namespace Backend.Controllers
             .ToListAsync();
             return StatusCode(200, users);
         }
-
-
-        
-
-
-
-
     }
             
 }
