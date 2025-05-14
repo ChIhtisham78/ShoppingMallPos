@@ -219,10 +219,10 @@ namespace Backend.Controllers
             var Username = await _userManager.Users.FirstOrDefaultAsync(x=>x.UserName == username);
             {
                 if (Username == null){
-                    return StatusCode(400, new{message="UserName not Found"});
+                    return NotFound();
                 };
             }
-            var otp = await _context.Otps.FirstOrDefaultAsync(x=>x.AppUser.UserName == Username.UserName);
+            var otp = await _context.Otps.FirstOrDefaultAsync(x=>x.AppUser!.UserName == Username.UserName);
             
             return StatusCode(200, new{message=otp?.Question});
             
