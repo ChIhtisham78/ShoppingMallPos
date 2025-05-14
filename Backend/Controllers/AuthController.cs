@@ -37,10 +37,12 @@ namespace Backend.Controllers
             _token = token;
         }
 
+
+
         [HttpPost("create/admin")]
         public async Task<IActionResult> CreateAdminEP([FromBody] CreateAdminDto adminDto){
             if (!ModelState.IsValid){
-                return StatusCode(400, new {message=ModelState});
+                return StatusCode(400, new {message=ModelState});   
             }
             try{
                 var user = new AppUser{
@@ -193,7 +195,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet("get/user/data/")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> GetUserDetails(){
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId)) 
